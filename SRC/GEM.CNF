@@ -1,0 +1,13 @@
+# gem.cnf
+setenv PATH=.,c:\geneva
+setenv ACCPATH=\
+setenv ACCEXT=ACC,ACX
+setenv GEMEXT=PRG,APP,GTP,EXE
+setenv TOSEXT=TOS,TTP
+setenv SHOWHELP=c:\geneva\help\gnvahelp
+setenv TOSRUN=h:\source\windows\gnva_tos.prg
+;setenv TOSRUN=h:\multitos\miniwin.app
+;run h:\source\windows\setmouse\setmouse.prg
+shell c:\neodesk3\neodesk.exe
+;run h:\source\windows\test.prg
+;runacc h:\source\windows\gnva_mac\gnva_mac.prg

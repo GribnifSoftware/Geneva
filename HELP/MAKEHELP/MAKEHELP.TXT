@@ -1,0 +1,9 @@
+Geneva Makehelp Utility version 1.1
+-----------------------------------
+
+The instructions for creating source files to be compiled into HLP files
+are contained in the file MAKEHELP.HLP. To view this file, you need to use
+GNVAHELP.PRG.
+
+Either run GNVAELP and use its File->Open menu entry to load MAKEHELP.HLP,
+or, if using NeoDesk, drag MAKEHELP.HLP to GNVAHELP.PRG.

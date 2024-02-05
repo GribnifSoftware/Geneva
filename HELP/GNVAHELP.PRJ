@@ -1,0 +1,9 @@
+gnvahelp.prg
+=
+pcstart.o
+gnvahelp.c
+..\graphics.c
+..\fontlist.c
+pctoslib.lib
+new_gem.lib
+pcstdlib.lib

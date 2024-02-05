@@ -1,0 +1,9 @@
+# gem.cnf
+setenv PATH=,\geneva
+setenv ACCPATH=\
+setenv ACCEXT=ACC,ACX
+setenv GEMEXT=PRG,APP,GTP,EXE
+setenv TOSEXT=TOS,TTP
+setenv SHOWHELP=\geneva\gnvahelp
+setenv TOSRUN=\geneva\gnva_tos.prg
+#shell c:\neodesk4\neodesk.exe

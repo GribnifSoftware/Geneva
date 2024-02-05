@@ -1,0 +1,10 @@
+*
+=
+pcstart.o
+
+*
+vectests.s
+
+new_gem.lib
+pcstdlib.lib
+pctoslib.lib

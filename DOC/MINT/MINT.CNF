@@ -1,0 +1,8 @@
+# sample MINT.CNF forusing Geneva with MiNT
+#
+GEM=c:\geneva\geneva.prg
+#
+# If you already have GENEVA.PRX in your AUTO folder, try this instead:
+# GEM=c:\auto\geneva.prx
+#
+# end of file

@@ -1,0 +1,1049 @@
+' ----------------------------------------
+'         dmj's GFA Geneva Library
+'     Portions ½ 1993 Gribnif Software
+'      Version 1.0   November 5, 1993
+' Modified by Dan Wilga for Geneva rel 003
+' ----------------------------------------
+'
+' Every effort has been made to make sure this code is free from errors, but
+' this code is provided as-is, with no guarantee whatsoever.  Use it at your
+' own risk.
+'
+' Should you find an error, omission, or tip, please let me know.
+'
+'       GEnie: DMJ
+'    Internet: DMJ@genie.geis.com
+'
+'       Phone: (817) 582-7373
+'         Fax: (817) 582-7377
+'         BBS: (817) 582-0672 (14.4K, 24 Hrs, E-mail "Sysop" or "dmj")
+'
+'  Snail Mail: Damien M. Jones
+'              dmj software
+'              Route 1, Box 168
+'              Milford, TX 76670
+'              USA
+'
+> procedure X_documentation               ! Read in here first.
+  '
+  ' This is the GFA version of the NEW_AES.H and XWIND.H files on the Geneva
+  ' master disk.  Since it contains information from the disk as well as from
+  ' the Geneva manual, it falls under the same Product License as Geneva itself.
+  ' Consult your Geneva manual for further details.
+  '
+  ' This will NOT tell you how to write programs that take advantage of
+  ' Geneva; what it DOES do is provide you with a library of routines you can
+  ' use to call Geneva.  For documentation on these routines, see your Geneva
+  ' manual or (in a few cases) the Atari Compendium.
+  '
+  ' The procedure X_init should be called before using any Geneva variables
+  ' or constants.  The other functions (they are ALL functions) correspond to
+  ' those listed in section 13 of the Geneva manual.
+  '
+  ' The in-line comments listed in the X_init procedure come from the header
+  ' files, except those prefixed by ****.
+  '
+  ' -----------------
+  '   From XWIND.H:
+  ' -----------------
+  '
+  ' Since GFA BASIC does not have a struct variable type, to extract the items
+  ' in a struct you must do some peeking around.  Listed below is more
+  ' information for each of the Geneva structures.  NOTE: Some of the listings
+  ' in the Geneva manual are out of date.  These definitions were taken from
+  ' the .H files, and are assumed to be current.
+  '
+  ' G_cookie% - Pointer to G_COOKIE structure.  This pointer is the _value_
+  '             of the "Gnva" cookie.
+  '
+  ' Int{G_cookie%}        ver             Geneva version.
+  ' {G_cookie%+2}         *process_name   Pointer to process name.
+  '   Char{{G_cookie%+2}} process_name    Actual process name.
+  ' Int{G_cookie%+6}      apid            Applicatioin ID of process.
+  ' {G_cookie%+8}         (**aes_funcs)() Pointer to function array.
+  ' {G_cookie%+12}        (**xaes_funcs)() Pointer to more functions array.
+  '
+  ' Ani_mouse% - Pointer to ANI_MOUSE structure.
+  '
+  ' Int{Ani_mouse%}       frames          Number of frames in mouse sequence.
+  ' Int{Ani_mouse%+2}     delay           50 Hz ticks between frames.
+  '
+  ' Mouse forms are listed starting at Ani_mouse%+4.  There may be up to 32 of
+  ' them.
+  '
+  ' Rshdr2% - Pointer to RSHDR2 structure (long .RSC header).
+  '
+  ' Int{Rshdr2%}          rsh_vrsn        .RSC version--should be 3.
+  ' Int{Rshdr2%+2}        rsh_extvrsn     Set to "IN" by Interface.
+  ' {Rshdr2%+4}           rsh_object
+  ' {Rshdr2%+8}           rsh_tedinfo
+  ' {Rshdr2%+12}          rsh_iconblk
+  ' {Rshdr2%+16}          rsh_bitblk
+  ' {Rshdr2%+20}          rsh_frstr
+  ' {Rshdr2%+24}          rsh_string
+  ' {Rshdr2%+28}          rsh_imdata      Image data.
+  ' {Rshdr2%+32}          rsh_frimg
+  ' {Rshdr2%+36}          rsh_trindex
+  ' {Rshdr2%+40}          rsh_nobs        Counts of various structs.
+  ' {Rshdr2%+44}          rsh_ntree
+  ' {Rshdr2%+48}          rsh_nted
+  ' {Rshdr2%+52}          rsh_nib
+  ' {Rshdr2%+56}          rsh_nbb
+  ' {Rshdr2%+60}          rsh_nstring
+  ' {Rshdr2%+64}          rsh_nimages
+  ' {Rshdr2%+68}          rsh_rssize      Total bytes in resource.
+  '
+  ' Note that this is twice the size of the normal .RSC header.
+  '
+  ' Keycode% - Pointer to KEYCODE structure.
+  '
+  ' Byte{Keycode%}        shift    Bit codes: 3210 = Ctrl / Alt / LShft / Rshft
+  ' Byte{Keycode%+1}      scan     Scan code or zero.
+  ' Byte{Keycode%+2}      ascii    ASCII value or zero (see note in manual).
+  '
+  ' Ob_prefer% - Extended object definition (bitmapped flags).
+  '
+  '  3         2         1
+  ' 10987654321098765432109876543210-- Object is OUTLINED.
+  ' |  || |||  ||  ||         ||||'--- Object is SHADOWED.
+  ' |  || |||  ||  |'-Reservd-'||'---- Object is drawn in 3D.
+  ' |  || |||  ||  |           |'----- Object has rounded corners.
+  ' |  || |||  ||  |           '------ Atari 3D. (reserved for future use)
+  ' |  || |||  |'--'------------------ Color of frame.
+  ' |  || ||'--'---------------------- Color of text.
+  ' |  || |'-------------------------- 0: transparent, 1: replace.
+  ' |  |'-'--------------------------- Fill pattern index.
+  ' '--'------------------------------ Color of interior.
+  '
+  ' Settings% - Pointer to SETTINGS structure.
+  '
+  ' Int{Settings%}        version         Version SETTINGS is for, in BCD.
+  ' Int{Settings%+2}      struct_len      Total # of bytes in SETTINGS.
+  ' Int{Settings%+4}      boot_rez        ST/TT resolution at startup.
+  ' Int{Settings%+6}      falcon_rez      Falcon video mode at startup.
+  ' Int{Settings%+8}      flags           Bitmapped flags (see below).
+  ' Int{Settings%+10}     gadget_pause    # of 50 Hz timer ticks before repeat.
+  ' Settings%+12          menu_start      KEYCODE - Key to start menus.
+  ' Settings%+16          app_switch      KEYCODE - Key to toggle between apps.
+  ' Settings%+20          app_sleep       KEYCODE - Key to sleep an app.
+  ' Settings%+24          ascii_table     KEYCODE - Key to open ASCII table.
+  ' Settings%+28          redraw_all      KEYCODE - Key to redraw whole screen.
+  ' Settings%+32          wind_keys[13]   KEYCODEs for window events.
+  ' Settings%+84          color_3D[4]     OB_PREFERs for 3D objects.
+  ' Settings%+100         color_root[4]   OB_PREFERs for root objects.
+  ' Settings%+116         color_exit[4]   OB_PREFERs for EXIT objects.
+  ' Settings%+132         color_other[4]  OB_PREFERs for other objects.
+  ' Byte{Settings%+148}   sort_type       fsel sort type, 0 (Name) - 4 (None).
+  ' Char{Settings%+149}   find_file[26]   fsel search string.
+  ' Settings%+175         fsel_path[10][35] Item selector paths.
+  ' Settings%+525         fsel_ext[10][6] Item selector extension strings.
+  '
+  ' flags definition:
+  '
+  '      1
+  ' 5432109876543210-- Use pulldown menus.
+  ' |    |||||||||'--- Insert in dialog edits.
+  ' 'Rsv-'|||||||'---- Use long underlines in X_UNDERLINE.
+  '       ||||||'----- Alerts appear under mouse.
+  '       |||||'------ Use 1 column in Item Selector.
+  '       ||||'------- FMD_GROW/SHRINK is on.
+  '       |||'-------- Tear-off menus are always usable.
+  '       ||'--------- auto_update_shell flag.
+  '       |'---------- alert_mode_change flag.
+  '       '----------- ignore_video_mode in GENEVA.CNF flag.
+  '
+  ' See note in manual for color_xx[] arrays.
+  '
+  ' Wind_tree% - Pointer to WIND_TREE structure.
+  '
+  ' Int{Wind_tree%}       handle          Handle of window being modified.
+  ' Int{Wind_tree%+2}     count           Number of objects in window.
+  ' Int{Wind_tree%+4}     flag            Location to copy to / from.
+  ' {Wind_tree%+6}        *tree           Pointer to object tree.
+  '
+  ' Apflg% - APFLG definition (bitmapped flags).
+  '
+  '  3         2         1
+  ' 10987654321098765432109876543210-- Multitasking.
+  ' |              || ||||||||||||'--- Use extended object types.
+  ' |              || |||||||||||'---- Use rounded EXIT buttons.
+  ' |              || ||||||||||'----- Use auto keyboard equivs.
+  ' |              || |||||||||'------ Undraw when form_do exits.
+  ' |              || ||||||||'------- Allow windows off left edge.
+  ' |              || |||||||'-------- Redraw everything at quit.
+  ' |              || ||||||'--------- New messages for AES 4.0 OK.
+  ' |              || |||||'---------- Limit window handles to 1-7.
+  ' |              || ||||'----------- Limit malloc's.
+  ' |              || |||'------------ Keep desktop / menu bar.
+  ' |              || ||'------------- Clear malloc'd memory.
+  ' |              || |'-------------- Omit unnecessary gadgets.
+  ' |              |'-'--------------- Reserved for future use.
+  ' '--------------'------------------ KB of memory to limit to.
+  '
+  ' You can extract the KB memory limit with the following statement:
+  ' Limit&=Card(Swap(Apflg%))
+  '
+  ' You can splice a new one back in with this:
+  ' Apflg%=Card(Apflg%) Or Swap(Limit&)
+  '
+  ' Appflags% - Pointer to APPFLAGS structure.
+  '
+  ' Char{Appflags%}       name            Filename pattern to use these flags.
+  ' Char{Appflags%+13}    desc            User-defined description of what flags
+  '                                       are for.
+  ' {Appflags%+30}        flags           APFLG - Execution flags.
+  ' Appflags%+34          open_key        KEYCODE - Open application when this
+  '                                       key is pressed.
+  ' Appflags%+38          reserve_key[3]  KEYCODEs - Application uses these
+  '                                       keys, so don't let Geneva process them
+  '
+  ' Xfontinfo% - Pointer to XFONTINFO structure.
+  '
+  ' Int{Xfontinfo%}       font_id         VDI font ID#.
+  ' Int{Xfontinfo%+2}     point_size      Point size of the font.
+  ' Int{Xfontinfo%+4}     gadget_wid      Width of the border around a char in a
+  '                                       window gadget.
+  ' Int{Xfontinfo%+6}     gadget_ht       Height of the border around a char in
+  '                                       a window gadget.
+  '
+  ' -------------------
+  '   From NEW_AES.H:
+  ' -------------------
+  '
+  ' Menu% - Pointer to MENU structure.
+  '
+  ' {Menu%}               *mn_tree        Pointer to submenu tree.
+  ' Int{Menu%+4}          mn_menu         Index of parent of menu.
+  ' Int{Menu%+6}          mn_item         Index of menu item.
+  ' Int{Menu%+8}          mn_scroll       0 - don't scroll; 1 - scroll if needed
+  ' Int{Menu%+10}         mn_keystate     Control/Alt/Shift key state on return
+  '
+  ' Note that the first edition of the Atari Compendium omitted the mn_keystate
+  ' field; it is listed in the first errata sheet for that book.
+  '
+  ' Shwrcmd% - Pointer to a SHWRCMD structure.
+  '
+  ' {Shwrcmd%}            *name           Pointer to filename.
+  '   Char{{Shwrcmd%}}    name            Actual filename.
+  ' {Shwrcmd%+4}          psetlimit       Maximum memory size for program.
+  ' {Shwrcmd%+8}          prenice         MiNT process priority.
+  ' {Shwrcmd%+12}         *dflt_dir       Pointer to default directory.
+  '   Char{{Shwrcmd%+12}} dflt_dir        Actual default directory for program.
+  ' {Shwrcmd%+16}         *environ        Pointer to environment strings.
+  '
+  ' More information on this structure can be found in the Compendium, but you
+  ' should note that the Compendium uses slightly different names for the
+  ' fields in this structure than those shown here.
+  '
+  ' -----------------
+  '   Miscellaneous
+  ' -----------------
+  '
+  ' GFA does not have a GRECT structure, commonly used by C programs to
+  ' indicate a coordinate rectangle.  Here's the definition of the GRECT
+  ' structure (Grect% is a pointer to one):
+  '
+  ' Int{Grect%}           g_x             X coordinate of left edge.
+  ' Int{Grect%+2}         g_y             Y coordinate of top edge.
+  ' Int{Grect%+4}         g_w             Rectangle width.
+  ' Int{Grect%+6}         g_h             Rectangle height.
+  '
+  ' GFA has a variable type which IS eight bytes long (big enough to hold a
+  ' GRECT)--floating-point.  To make it easier to use floating-point variables
+  ' as GRECTs, I have included the Ext_read_rect() and Ext_write_rect()
+  ' procedures.  Note than when a GRECT is being passed to a procedure or
+  ' function, I pass the ADDRESS, not the floating-point value itself.  Don't
+  ' try to print a floating-point variable used as a GRECT (you'll get
+  ' garbage).  Also note that the way the Ext_read_rect and Ext_write_rect
+  ' procedures are written, you can use ANY 8-byte memory block as a GRECT;
+  ' I recommend using floating-point variables only because they are
+  ' convenient.
+  '
+  ' In order to make your program more multitasking-friendly, you should follow
+  ' these guidelines:
+  '
+  '       1. Include one RESERVE statement near the beginning of your
+  '          program, which should keep just enough memory for GFA to
+  '          manage strings.  (32K should be enough, unless your program
+  '          is string-intensive.)  Don't use RESERVE after this; GFA
+  '          makes bad assumptions about RESERVE and your program may
+  '          crash.
+  '       2. Use malloc() for any large memory allocations.  Don't use
+  '          large arrays--use malloc() instead.
+  '       3. Put dialogs in windows whenever possible.
+  '       4. Name your program with menu_register.
+  '       5. Don't hog processor control for long periods of time;
+  '          give other programs a chance to run whenever possible.
+  '
+  ' ------------------
+  '   Revision Notes
+  ' ------------------
+  '
+  ' - Several of the x_settings constants were not explicitly stated in the
+  '   XWIND.H file.  I assigned them what I assumed to be correct values.
+  ' - The x_wind_calc() function was not fully documented in the Geneva
+  '   manual.  I assume the GFA routine is correct.
+  ' - x_sprintf() and x_sscanf() are not included in this version of the
+  '   library; GFA provides several functions which provide similar
+  '   functionality.  (And besides, GFA doesn't allow a variable number of
+  '   parameters to be passed to a function.)  I will add these later when
+  '   I have more time.
+  '
+Return
+> procedure X_init                        ! Initialize constants.
+  '
+  ' -----------------------
+  '   Items from XWIND.H.
+  ' -----------------------
+  '
+  Geneva_cookie%=Cvl("Gnva")
+  Geneva_ver&=&H102
+  '
+  Cjar_xbios&=Cvi("CJ")
+  Cjar_ok&=Cvi("ar")
+  '
+  ' appl_search constants.
+  '
+  X_aps_child0&=&H7100
+  X_aps_child&=&H7101
+  X_aps_chexit&=-1
+  '
+  ' wind_get / wind_set constants.
+  '
+  X_wf_menu&=&H1100
+  X_wf_dialog&=&H1200
+  X_wf_dialwid&=&H1300
+  X_wf_dialht&=&H1400
+  X_wf_dfltdesk&=&H1500         ! wind_set only
+  X_wf_minmax&=&H1600
+  '
+  X_wf_hsplit&=&H1700
+  X_wf_vsplit&=&H1800
+  X_wf_splmin&=&H1900
+  X_wf_hslide2&=&H1A00
+  X_wf_vslide2&=&H1B00
+  X_wf_hslsize2&=&H1C00
+  X_wf_vslsize2&=&H1D00
+  '
+  X_wf_dialflgs&=&H1E00
+  X_wd_active&=1                ! Mouse / keyboard events processed.
+  X_wd_blitscrl&=2              ! Use blit for realtime scroll.
+  '
+  X_wf_objhand&=&H1F00
+  X_wf_dialedit&=&H2000
+  '
+  ' evnt_multi / evnt_mesag constants.
+  '
+  X_mn_selected&=&HFFFFE000
+  X_wm_selected&=&HFFFFE100     ! Only if X_WTFL_CLICKS is off.
+  X_get_help&=&HFFFFE200
+  X_wm_hsplit&=&HFFFFE400
+  X_wm_vsplit&=&HFFFFE500
+  X_wm_arrowed2&=&HFFFFE600
+  X_wm_hslid2&=&HFFFFE700
+  X_wm_vslid2&=&HFFFFE800
+  X_wm_object&=&HFFFFE900
+  '
+  X_mu_dialog&=&H4000           ! evnt_multi (only) type.
+  '
+  ' objc_draw constants.
+  '
+  X_magmask&=&HFFFFF000         ! ob_state: Mask for X_MAGIC.
+  X_magic&=&H900                !           Must be set this way.
+  X_prefer&=&H40                !           User-defined fill.
+  X_draw3d&=&H80                !           3D.
+  X_rounded&=&H100              !           Rounded.
+  X_kbd_equiv&=&H200            !           Scan for ['s; Root: no auto equivs.
+  X_smalltext&=&H400            !           Small font.
+  '
+  X_mover&=17                   ! Extended ob_type: Dialog mover box.
+  X_radchkund&=18               !                   Radio / check / Undo.
+  X_underline&=19               !                   Title (G_STRING).
+  X_group&=20                   !                   Group (G_BUTTON).
+  X_help&=21                    !                   Activated with Help key.
+  X_undo&=31                    !                   Activated with Undo key.
+  X_usrdefpre&=90               !                   Call G_USERDEF before draw.
+  X_usrdefpost&=91              !                   Call G_USERDEF after draw.
+  '
+  X_bold&=&H4000                ! ob_flags: With X_MAGIC, bold text.
+  X_italic&=&HFFFF8000          !           With X_MAGIC, italic text.
+  '
+  ' form_dial constants.
+  '
+  X_fmd_start&=&H1000           ! Save area under dialog.
+  X_fmd_finish&=&H1003          ! Restore area under dialog.
+  '
+  ' graf_mouse constants.
+  '
+  X_lftrt&=8                    ! Left-right arrow.
+  X_updown&=9                   ! Up-down arrow.
+  X_mreset&=&H1000              ! Reset to on once.
+  X_mget&=&H1001                ! Get mouse shape.
+  X_set_shape&=&H1100           ! Add to mouse shape index to change shape.
+  '
+  ' rsrc_load constants.
+  '
+  X_longrsc&=Cvi("IN")
+  '
+  ' x_settings constants.
+  '
+  Set_ver&=&H100
+  '
+  Xs_uppage&=0
+  Xs_dnpage&=1                  ! **** The XWIND.H file refers to WA_... values
+  Xs_upline&=2                  ! **** that I are defined in the normal AES.H
+  Xs_dnline&=3
+  Xs_lfpage&=4
+  Xs_rtpage&=5
+  Xs_lfline&=6
+  Xs_rtline&=7
+  '
+  Xs_close&=8                   ! **** These were specified in XWIND.H.
+  Xs_cycle&=9
+  Xs_lfinfo&=11
+  Xs_rtinfo&=12
+  '
+  ' x_shel_get / x_shel_put constants.
+  '
+  X_shloadsave&=-1              ! Load / save SETTINGS.
+  X_shopen&=0                   ! Start read / write.
+  X_shaccess&=1                 ! Read / write.
+  X_shclose&=2                  ! Close.
+  '
+  ' x_wind_create / x_wind_calc constants.
+  '
+  X_menu&=1
+  X_hsplit&=2
+  X_vsplit&=4
+  '
+  ' x_wind_tree constants.
+  '
+  X_wt_getcnt&=0                ! Get count and flag.
+  X_wt_read&=1                  ! Copy window tree.
+  X_wt_set&=2                   ! Set new tree.
+  '
+  X_wtfl_resize&=1              ! Flags bit 0: Auto resize.
+  X_wtfl_clicks&=2              !           1: Process clicks.
+  X_wtfl_sliders&=4             !           2: Resize sliders, info.
+  '
+  ' Window gadgets.
+  Wgclose&=1                    ! BOXCHAR
+  Wgmove&=2                     ! BOXTEXT
+  Wgiconiz&=3                   ! BOXCHAR
+  Wgback&=4                     ! BOXCHAR
+  Wgfull&=5                     ! BOXCHAR
+  Wgileft&=6                    ! BOXCHAR
+  Wginfo&=7                     ! BOXTEXT
+  Wgirt&=8                      ! BOXCHAR
+  Wgtoolbox&=9                  ! IBOX
+  Wgmnleft&=10                  ! BOXCHAR
+  Wgmenu&=11                    ! BOX
+  Wgmnrt&=12                    ! BOXCHAR
+  Wgup&=13                      ! BOXCHAR
+  Wgvbigsl&=14                  ! BOX
+  Wgvsmlsl&=15                  ! BOX
+  Wgdown&=16                    ! BOXCHAR
+  Wgvsplit&=17                  ! BOX
+  Wgup2&=18                     ! BOXCHAR
+  Wgvbigsl2&=19                 ! BOX
+  Wgvsmlsl2&=20                 ! BOX
+  Wgdown2&=21                   ! BOXCHAR
+  Wgleft&=22                    ! BOXCHAR
+  Wghbigsl&=23                  ! BOX
+  Wghsmlsl&=24                  ! BOX
+  Wgrt&=25                      ! BOXCHAR
+  Wghsplit&=26                  ! BOX
+  Wgleft2&=27                   ! BOXCHAR
+  Wghbigsl2&=28                 ! BOX
+  Wghsmlsl2&=29                 ! BOX
+  Wgrt2&=30                     ! BOXCHAR
+  Wgsize&=31                    ! BOXCHAR
+  '
+  ' -------------------------
+  '   Items from NEW_AES.H.
+  ' -------------------------
+  '
+  ' New AES messages.
+  '
+  Wm_iconify&=34                ! AES 4.1 and newer.
+  Wm_uniconify&=35              ! AES 4.1.
+  Wm_alliconify&=36             ! AES 4.1.
+  Wm_toolbar&=37                ! AES 4.1.
+  Resch_completed&=61           ! Typo corrected from AES.H.
+  Sh_wdraw&=72
+  '
+  ' New object constants.
+  '
+  G_cicon&=33                   ! Ob_type.
+  Fl3dmask&=&H600               ! Ob_flags.
+  Fl3dnone&=0
+  Fl3dind&=&H200                ! **** Note: these do not match the Compendium,
+  Fl3dbak&=&H400                !            because the Compendium is wrong!
+  Fl3dact&=&H600
+  '
+  ' objc_sysvar constants.
+  '
+  Lk3dind&=1
+  Lk3dact&=2
+  Indbutcol&=3
+  Actbutcol&=4
+  Backgrcol&=5
+  Ad3dvalue&=6
+  '
+  ' graf_mouse constants.
+  '
+  M_save&=258
+  M_restore&=259
+  M_previous&=260
+  '
+  ' wind_create / wind_calc constants.
+  '
+  Smaller&=&H1000               ! AES 4.1 and newer.
+  '
+  ' wind_get / wind_set constants.
+  '
+  Wf_bottom&=25                 ! 1/25/93.
+  Wf_iconify&=26                ! AES 4.1 and newer.
+  Wf_uniconify&=27              ! AES 4.1.
+  Wf_uniconifyxywh&=28          ! AES 4.1.
+  Wf_toolbar&=30                ! AES 4.1.
+  Wf_ftoolbar&=31               ! AES 4.1.
+  Wf_ntoolbar&=32               ! AES 4.1.
+  '
+  ' The following definitions were added by Dan Wilga, to make using
+  ' shel_write easier.
+  '
+  ' shel_write sh_wdoex parameter flags in LSB.
+  '
+  Shw_runany&=0                 ! Run and let AES decide mode.
+  Shw_runapp&=1                 ! Run an application.
+  Shw_runacc&=3                 ! Run a desk accessory.
+  Shw_shutdown&=4               ! Enter shutdown mode.
+  Shw_newrez&=5                 ! Change resolution.
+  Shw_broadcast&=6              ! Broadcast to all processes.
+  Shw_environ&=8                ! Modify environment.
+  Shw_msgtype&=9                ! What kind of message app can understand.
+  Shw_sendtoaes&=10             ! Send AES a message.
+  '
+  ' shel_write sh_wdoex parameter flags in MSB.
+  '
+  Shd_environ&=&H800            ! Environment string.
+  Shd_dfltdir&=&H400            ! Default directory string.
+  Shd_prenice&=&H200            ! MiNT Prenice (priority) level.
+  Shd_psetlim&=&H100            ! MiNT memory allocation limit.
+  '
+Return
+'
+> function Appl_yield                     ! Allow other processes to take
+'                                         ! control.
+$F%
+'
+Gcontrl(0)=17                 ! Prep CONTROL array.
+Gcontrl(1)=0
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_appl_flags(Getset&,Index&,Flags%) ! Get or set program flags.
+$F%
+'
+Gcontrl(0)=&H7100             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Getset&             ! Write input parameters.
+Gintin(1)=Index&
+Addrin(0)=Flags%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_appl_font(Getset&,Zero&,Info%) ! Change font characteristics.
+$F%
+'
+Gcontrl(0)=&H7101             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Getset&             ! Write input parameters.
+Gintin(1)=Zero&
+Addrin(0)=Info%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_appl_sleep(Id&,Sleep&)       ! Put an application to sleep.
+$F%
+'
+Gcontrl(0)=&H7102             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Id&                 ! Write input parameters.
+Gintin(1)=Sleep&
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_appl_term(Apid&,Retrn&,Set_me&) ! Terminate an application.
+$F%
+'
+Gcontrl(0)=&H7103             ! Prep CONTROL array.
+Gcontrl(1)=3
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Apid&               ! Write input parameters.
+Gintin(1)=Retrn&
+Gintin(2)=Set_me&
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_form_center(Tree%,Var Cx&,Cy&,Cw&,Ch&) ! Center an object tree.
+$F%
+'
+Gcontrl(0)=&H7110             ! Prep CONTROL array.
+Gcontrl(1)=0
+Gcontrl(2)=4
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Addrin(0)=Tree%               ! Write input parameters.
+'
+Gemsys                        ! Call AES.
+'
+Cx&=Gintout(1)                ! Get output values.
+Cy&=Gintout(2)
+Cw&=Gintout(3)
+Ch&=Gintout(4)
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_form_error(Fmt$,Errnum&)     ! Give a formatted error message alert
+$F%
+'
+Fmt$=Fmt$+Chr$(0)             ! Insure null-terminated string.
+'
+Gcontrl(0)=&H7111             ! Prep CONTROL array.
+Gcontrl(1)=1
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Errnum&             ! Write input parameters.
+Addrin(0)=V:Fmt$
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Convert to/from standard GEMDOS filename.
+> function X_form_filename(Tree%,Obj&,To_from&,Var String$)
+$F%
+'
+String$=Left$(String$+String$(13,0),13) ! Pad to 13 characters with NULLs.
+'
+Gcontrl(0)=&H7112             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=2
+Gcontrl(4)=0
+'
+Gintin(0)=Obj&                ! Write input parameters.
+Gintin(1)=To_from&
+Addrin(0)=Tree%
+Addrin(1)=V:String$
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Handle mouse clicks in a dialog.
+> function X_form_mouse(Tree%,Mouse_x&,Mouse_y&,Clicks&,Var Edit_obj&,Next_obj&,Edit_idx&)
+$F%
+'
+Gcontrl(0)=&H7113             ! Prep CONTROL array.
+Gcontrl(1)=6
+Gcontrl(2)=4
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Mouse_x&            ! Write input parameters.
+Gintin(1)=Mouse_y&
+Gintin(2)=Clicks&
+Gintin(3)=Edit_obj&
+Gintin(4)=Next_obj&
+Gintin(5)=Edit_idx&
+Addrin(0)=Tree%
+'
+Gemsys                        ! Call AES.
+'
+Edit_obj&=Gintout(1)          ! Get output values.
+Next_obj&=Gintout(2)
+Edit_idx&=Gintout(3)
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Extended file selector.
+> function X_fsel_input(Var Inpath$,Pathlen&,Files$,Sels&,Exbutton&,Label$)
+$F%
+Local T&
+'
+T&=13*Sels&+1                 ! Minimum length of Files$.
+'                             ! Pad to Pathlen& characters with NULLs.
+Inpath$=Left$(Inpath$+String$(Pathlen&,0),Pathlen&)
+Files$=Left$(Files$+String$(T&,0),T&) ! Pad to T& characters with NULLs.
+Label$=Label$+Chr$(0)         ! Insure null-terminated.
+'
+Gcontrl(0)=&H7120             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=2
+Gcontrl(3)=3
+Gcontrl(4)=0
+'
+Gintin(0)=Pathlen&            ! Write input parameters.
+Gintin(1)=Sels&
+Addrin(0)=V:Inpath$
+Addrin(1)=V:Files$
+Addrin(2)=V:Label$
+'
+Gemsys                        ! Call AES.
+'
+Exbutton&=Gintout(1)          ! Get output values.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_graf_blit(Source%,Dest%)  ! Blit one area of the screen to another.
+$F%
+'
+Gcontrl(0)=&H7130             ! Prep CONTROL array.
+Gcontrl(1)=0
+Gcontrl(2)=1
+Gcontrl(3)=2
+Gcontrl(4)=0
+'
+Addrin(0)=Source%             ! Write input parameters.
+Addrin(1)=Dest%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Extended rubberband box drawing.
+> function X_graf_rubberbox(Area%,Outer%,Minwidth&,Minheight&,Maxwidth&,Maxheight&,Snap&,Lag&)
+$F%
+'
+Gcontrl(0)=&H7131             ! Prep CONTROL array.
+Gcontrl(1)=6
+Gcontrl(2)=1
+Gcontrl(3)=2
+Gcontrl(4)=0
+'
+Gintin(0)=Minwidth&           ! Write input parameters.
+Gintin(1)=Minheight&
+Gintin(2)=Maxwidth&
+Gintin(3)=Maxheight&
+Gintin(4)=Snap&
+Gintin(5)=Lag&
+Addrin(0)=Area%
+Addrout(1)=Outer%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Process keyboard input into an editable field.
+> function X_objc_edit(Tree%,Edit_obj&,Key_press&,Shift_state&,Var Edit_idx&,Mode&)
+$F%
+'
+Gcontrl(0)=&H7140             ! Prep CONTROL array.
+Gcontrl(1)=5
+Gcontrl(2)=2
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Edit_obj&           ! Write input parameters.
+Gintin(1)=Key_press&
+Gintin(2)=Edit_idx&
+Gintin(3)=Shift_state&
+Gintin(4)=Mode&
+Addrin(0)=Tree%
+'
+Gemsys                        ! Call AES.
+'
+Edit_idx&=Gintout(1)          ! Get output values.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_wdial_draw(Handle&,Start&,Depth&) ! Redraw windowed dialog.
+$F%
+'
+Gcontrl(0)=&H7150             ! Prep CONTROL array.
+Gcontrl(1)=3
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Handle&             ! Write input parameters.
+Gintin(1)=Start&
+Gintin(2)=Depth&
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Change windowed dialog object.
+> function X_wdial_change(Handle&,Object&,Newstate&)
+$F%
+'
+Gcontrl(0)=&H7151             ! Prep CONTROL array.
+Gcontrl(1)=3
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Handle&             ! Write input parameters.
+Gintin(1)=Object&
+Gintin(2)=Newstate&
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_wind_create(Kind&,Xkind&,Wx&,Wy&,Ww&,Wh&) ! Extended wind_create().
+$F%
+'
+Gcontrl(0)=&H7153             ! Prep CONTROL array.
+Gcontrl(1)=6
+Gcontrl(2)=1
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Kind&               ! Write input parameters.
+Gintin(1)=Xkind&
+Gintin(2)=Wx&
+Gintin(3)=Wy&
+Gintin(4)=Ww&
+Gintin(5)=Wh&
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Extended wind_calc().
+> function X_wind_calc(Type&,Kind&,Xkind&,Inx&,Iny&,Inw&,Inh&,Var Outx&,Outy&,Outw&,Outh&)
+$F%
+'
+Gcontrl(0)=&H7154             ! Prep CONTROL array.
+Gcontrl(1)=7
+Gcontrl(2)=5
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Type&               ! Write input parameters.
+Gintin(1)=Kind&
+Gintin(2)=Xkind&
+Gintin(3)=Inx&
+Gintin(4)=Iny&
+Gintin(5)=Inw&
+Gintin(6)=Inh&
+'
+Gemsys                        ! Call AES.
+'
+Outx&=Gintout(1)              ! Get output values.
+Outy&=Gintout(2)
+Outw&=Gintout(3)
+Outh&=Gintout(4)
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_wind_tree(Mode&,Wtree%) ! Get or alter a window's OBJECT tree.
+$F%
+'
+Gcontrl(0)=&H7152             ! Prep CONTROL array.
+Gcontrl(1)=1
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Mode&               ! Write input parameters.
+Addrin(0)=Wtree%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Get or set Geneva's internal settings.
+> function X_settings(Getset&,Length&,User%)
+$F%
+'
+Gcontrl(0)=&H7180             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Getset&             ! Write input parameters.
+Gintin(1)=Length&
+Addrin(0)=User%
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_shel_get(Mode&,Length&,Var Buf$) ! Read information from GENEVA.CNF
+$F%
+'
+Buf$=String$(Length&,0)       ! Reserve space for data.
+'
+Gcontrl(0)=&H7181             ! Prep CONTROL array.
+Gcontrl(1)=2
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Mode&               ! Write input parameters.
+Gintin(1)=Length&
+Addrin(0)=V:Buf$
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function X_shel_put(Mode&,Buf$) ! Write information to GENEVA.CNF.
+$F%
+'
+Buf$=Buf$+Chr$(0)             ! Insure null-terminated.
+'
+Gcontrl(0)=&H7182             ! Prep CONTROL array.
+Gcontrl(1)=1
+Gcontrl(2)=1
+Gcontrl(3)=1
+Gcontrl(4)=0
+'
+Gintin(0)=Mode&               ! Write input parameters.
+Addrin(0)=V:Buf$
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'                             ! Inform the Help display program of a request for
+'                             ! help text.
+> function X_help(Topic$,Helpfile$,Sensitive&)
+$F%
+'
+Topic$=Topic$+Chr$(0)         ! Insure null-terminated strings.
+Helpfile$=Helpfile$+Chr$(0)
+'
+Gcontrl(0)=&H7185             ! Prep CONTROL array.
+Gcontrl(1)=1
+Gcontrl(2)=1
+Gcontrl(3)=2
+Gcontrl(4)=0
+'
+Gintin(0)=Sensitive&          ! Write input parameters.
+Addrin(0)=V:Topic$
+Addrin(1)=V:Helpfile$
+'
+Gemsys                        ! Call AES.
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'
+> function Appl_getinfo(Ap_gtype&,Var Ao_gout1&,Ap_gout2&,Ap_gout3&,Ap_gout4&)
+$F%
+'
+Gcontrl(0)=130                ! Prep CONTROL array.
+Gcontrl(1)=1
+Gcontrl(2)=5
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Ap_gtype&           ! Write input parameters.
+'
+Gemsys                        ! Call AES.
+'
+Ap_gout1&=Gintout(1)          ! Get output values.
+Ap_gout2&=Gintout(2)
+Ap_gout3&=Gintout(3)
+Ap_gout4&=Gintout(4)
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+> function Objc_sysvar(Ob_smode&,Ob_swhich&,Ob_sival1&,Ob_sival2&,Var Ob_soval1&,Ob_soval2&)
+$F%
+'
+Gcontrl(0)=48                 ! Prep CONTROL array.
+Gcontrl(1)=4
+Gcontrl(2)=3
+Gcontrl(3)=0
+Gcontrl(4)=0
+'
+Gintin(0)=Ob_smode&           ! Write input parameters.
+Gintin(1)=Ob_swhich&
+Gintin(2)=Ob_sival1&
+Gintin(3)=Ob_sival2&
+'
+Gemsys                        ! Call AES.
+'
+Ob_soval1&=Gintout(1)         ! Get output values.
+Ob_soval2&=Gintout(2)
+'
+Return Gintout(0)             ! Return error code.
+'
+Endfunc
+'
+> procedure Ext_read_rect(Rect%,Var X&,Y&,W&,H&) ! Read a GRECT structure.
+X&=Int{Rect%}
+Y&=Int{Rect%+2}
+W&=Int{Rect%+4}
+H&=Int{Rect%+6}
+Return
+> procedure Ext_write_rect(Rect%,X&,Y&,W&,H&)    ! Write a GRECT structure.
+Int{Rect%}=X&
+Int{Rect%+2}=Y&
+Int{Rect%+4}=W&
+Int{Rect%+6}=H&
+Return
+' End of XWINDGFA.LST
+'

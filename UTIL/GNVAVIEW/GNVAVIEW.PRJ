@@ -1,0 +1,11 @@
+gnvaview.prg
+=
+pcvstart.o
+gnvaview.c
+..\graphics.c
+..\fontlist.c
+;views.s
+pcstdlib.lib
+pctoslib.lib
+new_gem.lib
+multevnt.o

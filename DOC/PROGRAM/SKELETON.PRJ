@@ -1,0 +1,7 @@
+*
+=
+pcstart.o
+*
+pctoslib.lib
+new_gem.lib		; Geneva GEM library
+pcstdlib.lib

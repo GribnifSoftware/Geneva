@@ -1,0 +1,149 @@
+; Geneva installation script. Copyright 2017, Gribnif Software.
+source  Geneva Disk
+dest    Destination
+sundo
+echo Geneva installation program.||^
+This program will copy all of the|^
+necessary Geneva files to a new disk.||^
+Press Return to continue...
+ask Continue
+askend
+ifex REGISTER.PRG
+  gem REGISTER.PRG
+ifend
+open
+write # GEM.CNF: written by INSTALL.PRG
+write #
+echo Do you own NeoDesk 3 or 4? If so, you can have it set|^
+to automatically run as the "shell" every time you|^
+start the computer by clicking on "Shell", below:
+ask Shell|Skip
+button1
+  echo Please select the file NEODESK.EXE on your|^
+boot disk||^
+Press Return to continue...
+  ask Continue
+  askend
+  destsel %ddrive:\NEODESK.EXE Where is NEODESK.EXE?
+  write shell %dpathNEODESK.EXE
+  write
+  echo IMPORTANT:||^
+Please make sure that NEOLOAD.PRG is in the AUTO|^
+folder of your boot disk and that NeoDesk is *not*|^
+set to run automatically.||^
+If you have TOS 1.00 or 1.02, this can be done by|^
+disabling STARTGEM.PRG. If you have a newer version of|^
+TOS, rename DESKTOP.INF or NEWDESK.INF to ".INX".
+  ask Continue
+  askend
+askend
+echo At the following dialog, please select the|^
+disk drive which contains your AUTO folder.||^
+Press Return to continue...
+ask Continue
+askend
+dtitle AUTO folder location
+askdrive
+write setenv ACCPATH=%ddrive:\
+ifnex %ddrive:\AUTO\JAR*.PRG
+  copy JARXXX\JARXXX.PRG \AUTO\JAR10.PRG
+ifend
+copy GENEVA\GENEVA.PRG \AUTO\GENEVA.PRG
+copy TASKMAN\TASKMAN.ACC \TASKMAN.ACC
+COPY TASKMAN\TASKMAN.RSC \TASKMAN.RSC
+echo Please select the location you want to write|^
+a folder containing Geneva's files to:||^
+Press Return to continue...
+ask Continue
+askend
+var %ddrive
+destsel %ddrive:\*.* Location for GENEVA folder:
+copy GENEVA\GENEVA.CNF GENEVA\GENEVA.CNF
+COPY GENEVA\GNVA_TOS.PRG GENEVA\GNVA_TOS.PRG
+COPY GENEVA\GNVA_TOS.RSC GENEVA\GNVA_TOS.RSC
+COPY GENEVA\TERMCAP GENEVA\TERMCAP
+COPY GENEVA\HELP\GNVAHELP.PRG GENEVA\HELP\GNVAHELP.PRG
+COPY GENEVA\HELP\GNVAHELP.RSC GENEVA\HELP\GNVAHELP.RSC
+COPY GENEVA\HELP\TASKMAN.HLP GENEVA\HELP\TASKMAN.HLP
+COPY GENEVA\HELP\GENEVA.HLP GENEVA\HELP\GENEVA.HLP
+COPY GENEVA\HELP\GNVA_TOS.HLP GENEVA\HELP\GNVA_TOS.HLP
+COPY GENEVA\HELP\GNVAHELP.HLP GENEVA\HELP\GNVAHELP.HLP
+write setenv PATH=,%dpathGENEVA
+write setenv ACCEXT=ACC,ACX
+write setenv GEMEXT=PRG,APP,GTP,EXE
+write setenv TOSEXT=TOS,TTP
+write setenv SHOWHELP=%dpathGENEVA\HELP\GNVAHELP
+write setenv TOSRUN=%dpathGENEVA\GNVA_TOS.PRG
+write # Other commands:
+write #   run <program> <parameters...>        Runs a program with parameters
+write #   runsleep <program> <parameters...>   Runs program, puts it to sleep
+write #   runacc <program>                     Runs desk accessory without opening
+write #   shell <program>                      Runs program as the shell
+write #
+echo Geneva comes with two new mouse pointer shapes: a 3D|^
+arrow, and an hourglass (in place of the busy bee.)|^
+You can also select from several other shapes by|^
+installing the SETMOUSE program.
+ask SETMOUSE|Defaults
+button1
+  write run %dpathGENEVA\SETMOUSE\SETMOUSE.PRG
+  write # end of GEM.CNF
+  flush
+  close %dpathGENEVA\GEM.CNF
+  copy %dpathGENEVA\GEM.CNF %var1:\GENEVA\GEM.CNF
+  COPY GENEVA\SETMOUSE\SETMOUSE.PRG GENEVA\SETMOUSE\SETMOUSE.PRG
+  COPY GENEVA\SETMOUSE\AT_ARROW.DAT GENEVA\SETMOUSE\AT_ARROW.DAT
+  COPY GENEVA\SETMOUSE\AT_BEE.DAT GENEVA\SETMOUSE\AT_BEE.DAT
+  COPY GENEVA\SETMOUSE\FLEXFING.MKM GENEVA\SETMOUSE\FLEXFING.MKM
+  COPY GENEVA\SETMOUSE\HOURGLAS.MKM GENEVA\SETMOUSE\HOURGLAS.MKM
+  COPY GENEVA\SETMOUSE\SPIN.MKM GENEVA\SETMOUSE\SPIN.MKM
+  open
+  write ; SETMOUSE configuration file
+  write ;
+  write ; Each non-comment line in this file has the format:
+  write ;   N shapefile
+  write ; where "shapefile" is either a MouseKaMania DAT or MKM file,
+  write ; and N is one of these numbers:
+  write ;   0: Arrow
+  write ;   1: Vertical line
+  write ;   2: Bee
+  write ;   3: Pointing hand
+  write ;   4: Grabbing hand
+  write ;   5: Thin cross
+  write ;   6: Thick cross
+  write ;   7: Outline cross
+  write ;   8: Up/down arrow
+  write ;   9: Left/right arrow
+  write ;
+  echo Choose either the normal Atari arrow shape|^
+or a 3D arrow shape:
+  ask Atari|3D
+  button1
+    write 0 at_arrow.dat
+  askend
+  echo Choose one of these busy bee shapes:|^
+1. Normal Atari busy bee|^
+2. Animated hourglass   |^
+3. Spinning symbol      |
+  ask Atari|Hourglass|Spinning
+  button1
+    write 2 at_bee.dat
+  button2
+    write 2 hourglas.mkm
+  button3
+    write 2 spin.mkm
+  askend
+  flush
+  close %dpathGENEVA\SETMOUSE\SETMOUSE.DAT
+button2
+  write # end of GEM.CNF
+  flush
+  close %dpathGENEVA\GEM.CNF
+  copy %dpathGENEVA\GEM.CNF %var1:\GENEVA\GEM.CNF
+  flush
+askend
+
+bell
+echo Installation complete! Enjoy Geneva!
+pause 3
+exit

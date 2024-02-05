@@ -1,0 +1,32 @@
+gnva_db.prg
+
+.C [-DDEBUG_ON]
+
+=                  ; list of modules follows...
+
+pCSTART.O          ; startup code
+fsel.c (fsel.rsh,win_var.h,xwind.h)
+scraps.c (win_var.h)
+rsrc.c (win_inc.h,win_var.h)
+graf.c (win_inc.h,win_var.h,xwind.h)
+shel.c (xwind.h,win_inc.h,win_var.h)
+xtras.c (xwind.h,win_var.h)
+appl.c (xwind.h,win_inc.h,win_var.h,initial.h)
+objc.c (xwind.h,win_inc.h,win_var.h)
+wins.s
+windows.c (xwind.h,win_inc.h,win_var.h)
+memory.s
+pCSTDLIB.LIB       ; standard library
+nalloc.c (win_var.h)
+pCTOSLIB.LIB       ; TOS library
+menu.c (xwind.h,win_inc.h,win_var.h)
+graphics.c [-P-]
+form_do.c (xwind.h,win_inc.h,win_var.h)
+procman.c
+util.s
+
+new_gem.LIB       ; AES and VDI library
+pCTOSLIB.LIB       ; TOS library
+pCSTDLIB.LIB       ; standard library
+pclnalib.lib
+multevnt.o

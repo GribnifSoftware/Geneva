@@ -1,0 +1,11 @@
+gnva_tos.prg
+=
+pcvstart.o
+gnva_tos.c
+gnvatoss.s
+graphics.c
+fontlist.c
+pcstdlib.lib
+pctoslib.lib
+new_gem.lib
+multevnt.o

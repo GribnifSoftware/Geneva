@@ -1,0 +1,76 @@
+/*   Geneva, Copyright 1993, Gribnif Software     **
+**   Strings in debugger (GNVA_DB) version        **
+**                                                **
+**   When translating, change just the things in  **
+**   "quotation marks". Leave all \Escape         **
+**   sequences and %formats the way they are!     **
+**   Beware the maximum length of alert strings!  **/
+
+#ifndef DEBUG_ON
+  #define DEBUGGER(x,y,z)
+#else
+  #define DEBUGGER(x,y,z)       debug_alert(x,y,z)
+
+  #define DEBUG_STR     "[1][Geneva debugger:|%s: %s|App: %s ID: %d][[Ignore All|[Skip]"
+  #define WNGET         "wind_get"
+  #define INVHAND       "invalid handle %d"
+  #define UNKTYPE       "unknown type %d"
+  #define WNCREATE      "wind_create"
+  #define NOHAND        "out of handles|(%d max.)"
+  #define WINDOP        "wind_open"
+  #define OPDESK        "cannot|open desktop"
+  #define ALROPEN       "window %d|already open"
+  #define NOTOWN        "window %d|not owned by this app"
+  #define WNCLOSE       "wind_close"
+  #define CLDESK        "cannot|close desktop"
+  #define NOTOPEN       "window %d|not open"
+  #define WNDEL         "wind_delete"
+  #define DELDESK       "cannot|delete desktop"
+  #define DECLOSE       "Warning:|Window %d not closed"
+  #define WUPDATE       "wind_update"
+  #define WNSET         "wind_set"
+  #define SETDESK       "cannot set|attribute %d of desktop"
+  #define ALRIC         "window %d|already iconized"
+  #define NOTIC         "window %d|is not iconized"
+  #define NOTDIAL       "window %d|is not a dialog window"
+  #define XWTRE         "x_wind_tree"
+  #define GRFMO         "graf_mouse"
+  #define MNUICH        "menu_icheck"
+  #define NULLTREE      "null tree"
+  #define MNUIEN        "menu_ienable"
+  #define MNUTNO        "menu_tnormal"
+  #define MNUTEX        "menu_text"
+  #define OBDRAW        "objc_draw"
+  #define OBDEL         "objc_delete"
+  #define OBORD         "objc_order"
+  #define DELROOT       "cannot|delete root"
+  #define REOROOT       "cannot|reorder root"
+  #define OBJCED        "objc_edit"
+  #define RSLOAD        "rsrc_load"
+  #define LOADALL       "unable to|load whole file"
+  #define NOMEM         "insufficient|memory"
+  #define NOTFOUND      "file|not found"
+  #define RSGA          "rsrc_gaddr"
+  #define RSSA          "rsrc_saddr"
+  #define SHWR          "shel_write"
+  #define SHGE          "shel_get"
+  #define SHGEFILE      "no NEWDESK.INF|or DESKTOP.INF file"
+  #define SHPU          "shel_put"
+  #define NOTDONE       "function|not implemented"
+  #define XSHGE         "x_shel_get"
+  #define SHUSED        "already in|use by process #%d"
+  #define DISKERR       "disk error #%d"
+  #define XSHPU         "x_shel_put"
+  #define XWDIALD       "x_wdial_draw"
+  #define XWDIALC       "x_wdial_change"
+  #define LALLOC        "lalloc"
+  #define BADSIZE       "bad size"
+  #define LFREE         "lfree"
+  #define NOARENA       "could not find|arena for block"
+  #define NOUNLINK      "could not unlink|from alloc list"
+  #define BADLINK       "recursive link"
+  #define LSHRINK	      "lshrink"
+  #define NEWGTOLD	    "new > old"
+  #define BADCHK	      "Bad checksum"
+  #define LREALLOC	    "lrealloc"
+#endif

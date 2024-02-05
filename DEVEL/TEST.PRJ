@@ -1,0 +1,8 @@
+*
+=
+pcstart.o
+*
+pctoslib.lib
+new_gem.lib
+pcstdlib.lib
+multevnt.o

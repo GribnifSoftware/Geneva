@@ -1,0 +1,142 @@
+1.8:
+
+  Changed version scheme
+  Removed copy protection and registration
+  Updated the About dialog, removing registration info
+  Made the file selector compatible with Hatari
+  Fixed a crash when loading from the AUTO folder under EmuTOS
+  Fixed a problem with INSTALL.PRG (and possibly other programs) not finding
+    files because the default path is not set correctly when they first run
+  If JARxxx is not run before GENEVA.PRG in the AUTO folder, try to run it
+    from there. This allows Geneva to run in an AUTO folder on a Hatari disk
+    disk drive under GEMDOS emulation.
+
+007:
+
+  Fixed wind_set( 0, X_WF_MINMAX call in TASKMAN
+  Fixed CH_EXIT, added NeoDesk 4 005 hack
+  Added Pexec(100) hack
+  Added Mxalloc hack
+  Fixed cursor drawing in centered GDOS_BITM
+  Fixed a case where a windowed dialog's cursor would not get redrawn
+    when topping the dialog.
+  _appl_yield (trap #2 with $C9 in D0) now works
+  Fixed possible crash when reusing a popup (SMU)
+  Fixed drawing of selected G_STRINGs in Atari 3D background mode (SMU)
+  Popup up/down arrows now keep the Atari 3D background color
+  Automatically generated keyboard equivalent underscores are now in
+    the correct color for Atari 3D G_STRINGs
+
+new:
+
+  proportional fonts in alerts & menus. Don't allow change prop in
+    temp flags!
+
+sugg:
+
+  cycle keys work for sleeping apps?
+  no multiple instances
+  windows subs attached to Desk menu. ^Click closes, sh-click iconifies
+
+
+Geneva 006 Revision Notes                               2/16/97
+
+IMPORTANT: You must use the version of GNVA_TOS which is written by this
+patch program. The version incuded with Geneva 005 will go into an endless
+loop of trying to open itself.
+
+Since 2/9:
+
+Tested and fixed Pfork() support.
+
+Since 005:
+
+The shel_find() (and, therefore rsrc_load()) function now looks in the
+application's "home" directory as a last resort. This means that starting
+an application which requires a RSC file will work when the app' default
+path is not the same as the RSC's location.
+
+The rsrc_load() function now sets global[9] to the size of the loaded
+resource file. (MG_FTP)
+
+If a multitasking application uses shel_write() mode 1 to launch a TOS
+child, the child is now run in a TOSRUN window, if possible. (THING)
+
+Whenever Geneva's item selector is called from within a prorgam which knows
+how to use MiNT's extended filesystems, the directories displayed in the
+item selector are no longer in lowercase. Previously, this caused lots of
+case-sensitivity problems.
+
+Fixed an obscure problem having to do with entering singletasking mode
+after using Sleep This.
+
+shel_write() mode 7 (broadcast to all applications) now works.  Previously,
+this function was incorrectly only available as mode 6. Now, for backward
+compatibility, both 6 and 7 do the same thing. The new_aes.h file has been
+corrected as well.
+
+
+2/9/97
+------
+
+Note: there have been slight changes to the format of GENEVA.CNF, however
+006 will read CNF files from all previous versions.
+
+The keycode for accessing the process manager introduced in 005 has changed
+to [Control][Shift][Alt][Tab]. This keycode can now be changed using the
+Task Manager, and is saved with the rest of Geneva's settings. The state of
+the process manager's Details button is also saved now.
+
+The Limit memory flag works again.
+
+When an app launches a child by using the old (non-multitasking) Pexec mode
+0, the child is no longer run in singletasking mode. The parent is still
+put to sleep, though. The result is that programs like UPoint, which call
+modules to perform a task before returning to the parent, will no longer be
+the only application on the screen. It also means that running a child from
+shells like Pure C and the Pure Debugger will not result in only the child
+being on screen.  There is an undocumented way to disable this, should it
+cause incompatibilities. Contact us for details.
+
+Geneva can now handle the case where a process running under MiNT performs
+a Pfork() or Pvfork() and then makes an AES call.
+
+Fixed a cosmetic error which occurred when scrolling the process manager
+list while items were selected.
+
+Programs which use an undocumented mode of iconification now work
+(ST-GUIDE, FREEDOM)
+
+The call appl_find("?AGI") now returns 0, to indicate the presence of a
+fully-implemented appl_getinfo() function in Geneva. As a result, some
+programs that previously did not use 3D buttons when Geneva was present may
+now do so.
+
+Numerous fixes have been made to the way background objects are drawn with
+Atari-style 3D colors, particularly disabled objects.
+
+Fixed a case where internal memory structures could possibly become
+corrupted when running under MiNT.
+
+The ob_spec fields of G_CICONs are now handled more like MultiTOS. It is
+now possible for a program to create a G_CICON that Geneva can display
+without the need for a resource file.
+
+Using the runacc command in GEM.CNF (or running TASKMAN by any method from
+GEM.CNF) won't sometimes cause other apps run from GEM.CNF not to start.
+
+Fixed a rare problem with singletasking apps not getting keyboard events.
+(PMJ_ENG2)
+
+Changes in GNVA_TOS:
+
+GNVA_TOS now returns a correct length for Fread() from the console.
+Pressing Control-C also now terminates the TOS program more quickly in this
+case.
+
+Fixed a bug that would sometimes result in extra characters being
+displayed.
+
+In general, handling of i/o redirection has been improved greatly.
+
+Writing a single character to the console is faster now.

@@ -1,0 +1,16 @@
+gnva_mac.prg
+=
+pcstart.o
+
+gnva_mac.c
+vecs.s
+io.c
+forms.c
+macro.c
+util.c
+edit.c
+multevnt.o
+
+new_gem.lib
+pctoslib.lib
+pcstdlib.lib

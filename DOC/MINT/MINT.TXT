@@ -1,0 +1,71 @@
+Using Geneva with MiNT
+----------------------
+
+  Geneva can be used with MiNT (MiNT is Now TOS), from Eric Smith and Atari
+  Corp. Without MiNT, Geneva runs in cooperative multitasking mode (where
+  switching to another process depends on it making calls to the AES).
+  With MiNT, Geneva uses preemptive multitasking (which gives an equal
+  amount of time to each process, regardless of what it is doing.)
+  
+  All of MiNT's normal features are available, like pipes, alternate
+  filesystems, etc. However, while the preemptive mode does prevent
+  programs from tying up the entire system, it is generally slower and
+  continues to get slower the more processes you run. This mode is also
+  less compatible with older applications.
+
+  Geneva was tested with version 1.12 of MiNT. Older versions may or may
+  not work properly.
+
+
+Installation
+------------
+
+  In order to install it, you have the choice of two setups:
+
+  Setup #1: Easy method
+
+  o You will already have JARxxx.PRG and GENEVA.PRG in your AUTO folder,
+    for the non-MiNT installation. Just add MINTNP.PRG to your AUTO
+    folder, making sure it is physically **last**.
+
+  o If you use NeoDesk, you must run NEOLOAD.PRG in the AUTO folder before
+    MINTNP.PRG. Generally speaking, most TSR's work best when run in the
+    AUTO folder prior to MINTNP.PRG.
+
+  o If there is to be a MINT.CNF file in the root directory of the boot
+    disk, make sure it does not contain any lines beginning with either
+    "INIT=" or "GEM=". These would load another shell in place of Geneva.
+
+  Setup #2: Slightly more difficult, but more flexible
+
+  o JARxxx.PRG must run in the AUTO folder. GENEVA.PRG must NOT, however.
+    It must be de-activated.
+
+  o MINTNP.PRG should be in the AUTO folder, in the last physical position.
+    The current version of Geneva cannot be used with memory protection
+    (MINT.PRG).
+
+  o If you use NeoDesk, you must run NEOLOAD.PRG in the AUTO folder before
+    MINTNP.PRG. Generally speaking, most TSR's work best when run in the
+    AUTO folder prior to MINTNP.PRG.
+
+  o MINT.CNF, in the root directory of the boot drive, should contain the
+    line:
+
+    GEM=<path>\geneva.prg
+
+    For example, if you have copied GENEVA.PRG to the folder C:\GENEVA\,
+    use the line:
+
+    GEM=c:\geneva\geneva.prg
+
+    If you use a boot manager, you can even be a little more creative.
+    Since you will already have a de-activated GENEVA.PRX in your AUTO
+    folder, you can use the line:
+
+    GEM=c:\auto\geneva.prx
+
+    This latter approach avoids the need to copy GENEVA.PRG to another
+    folder.
+
+    The MINT.CNF must not contain any "INIT=..." lines.

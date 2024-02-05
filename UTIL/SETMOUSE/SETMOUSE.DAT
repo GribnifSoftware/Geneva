@@ -1,0 +1,13 @@
+; 0: Arrow
+; 1: Vertical line
+; 2: Bee
+; 3: Pointing hand
+; 4: Grabbing hand
+; 5: Thin cross
+; 6: Thick cross
+; 7: Outline cross
+; 8: Up/down arrow
+; 9: Left/right arrow
+;
+0 triangle.dat
+2 hourglas.mkm

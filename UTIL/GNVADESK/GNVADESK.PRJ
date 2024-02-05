@@ -1,0 +1,8 @@
+gnvadesk.acc
+=
+pcstart.o
+gnvadesk.c
+
+pctoslib.lib
+new_gem.lib
+pcstdlib.lib

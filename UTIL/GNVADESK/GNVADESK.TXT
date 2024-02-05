@@ -1,0 +1,125 @@
+                        Geneva Desktop Pattern
+                             by Dan Wilga
+                 Copyright ½ 1995, Gribnif Software,
+                          All Rights Reserved.
+
+
+This program is COMMERCIAL. It is available only as part of the Geneva
+Utilities Disk, purchased from Gribnif Software or an authorized
+distributor.
+
+
+Installation
+------------
+
+The Geneva Desktop Pattern application must be installed as a desk
+accessory. Copy GNVADESK.ACC and GNVADESK.RSC to the same folder you
+normally load your desk accessories from and reboot the computer.
+
+You can also copy the GNVADESK.HLP file to the GENEVA\HELP directory, where
+Geneva's own help files should also be stored. You can leave the HLP file
+in the same directory as GNVADESK.ACC, but this may just add to the clutter
+in that directory.
+
+
+What It Does
+------------
+
+When you are not running any applications that have their own desktops,
+Geneva normally uses a deafult gray or green pattern for the desktop. it
+also uses this same desktop when switching to a singletasking application.
+
+Since there is normally no easy way to redefine the appearance of this
+desktop, the Geneva Desktop Pattern accessory was created. It allows you to
+customize the default desktop by choosing among the default fill patterns
+that are part of GEM.  Furthermore, if you have NeoDesk 4, you can use
+NeoDesk's desktop pattern or picture.
+
+
+The Main Window
+---------------
+
+The main window contains these elements:
+
+o Close box:      Clicking here will close the main window. Any changes you
+                  have made to the options will be remembered, so that you
+                  can reopen the window with the settings in tact. However,
+                  changes to the options do not actually go into effect.
+                  To have them take place, you must use either the Set
+                  button or the Ok button.
+
+o Mover bar:      This allows you to move the main window.
+
+o Iconify gadget: The iconify (delta) gadget will shrink the main window
+                  down to a small window toward the lower left of the
+                  screen. Double-clicking on the icon in the iconified
+                  window will cause the window to reopen.
+
+o Menu bar:       Clicking on a title in the menu bar will allow you to
+                  choose items in the menu. See the section below for
+                  descriptions of each menu entry.
+
+o Working area:   The working area of the window contains a dialog which
+                  gives you control over the replacement desktop pattern:
+
+  o Sample:       In the upper left corner, there is a sample of what the
+                  new desktop pattern will look like.
+
+  o Pattern:      Selecting the left or right arrows in the Pattern section
+                  will cycle forward or backward through the list of
+                  patterns. The center of this bar contains a sample of the
+                  currently selected pattern. Clicking here will produce a
+                  popup menu, from which you can choose a new pattern.
+
+  o Color:        Selecting the left or right arrows in the Color section
+                  will cycle forward or backward through the list of 16
+                  colors. The center of this bar contains a sample of the
+                  current color. Clicking here will produce a popup menu,
+                  from which you can choose a new color. Note that any
+                  colors your current video display mode cannot reproduce
+                  will be black.
+
+  o Use NeoDesk's Picture:  If you are using NeoDesk 4, then the desktop
+                  pattern can be replaced with the picture, if any, that
+                  NeoDesk is using as its desktop. Any Desktop Notes will
+                  also be displayed. If NeoDesk is not using a desktop
+                  picture, and the "Use NeoDesk's Pattern" option is not
+                  selected, then things will look just like they would if
+                  NeoDesk was not running: the normal pattern will be used.
+
+  o Use NeoDesk's Pattern:  If you are using NeoDesk 4, then the desktop
+                  pattern can be made the same as the one NeoDesk is using.
+                  Any Desktop Notes will also be displayed.  However, if
+                  NeoDesk is using a desktop picture, and the "Use
+                  NeoDesk's Picture" option is selected, then the picture
+                  will be used instead of the pattern.
+
+  o Set:          Selecting this button will update the default desktop
+                  with the settings that are currently in the main dialog.
+                  The window is left open so that you can make further
+                  changes.
+
+  o Ok:           This button updates the default desktop with the settings
+                  that are currently in the main dialog and closes the
+                  window.
+
+  o Cancel:       This button will close the window. The options will also
+                  revert to what they were when the Set or Ok button was
+                  last used.
+
+
+More About NeoDesk
+------------------
+
+If you are using either of the NeoDesk-related options, and NeoDesk quits
+or is Unloaded for Execution of another program, the default desktop will
+revert to the standard pattern. When and if NeoDesk returns, the pattern
+will be restored to the correct state automatically.
+
+
+Other Patterns
+--------------
+
+If you use Warp 9 from Codehead Technologies, you can edit the appearance
+of the fill patterns that are used. Please consult the Warp 9 manual for
+more information.
